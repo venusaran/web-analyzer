@@ -1,0 +1,29 @@
+# binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+
+# test binary, built with `go test -c`
+*.test
+
+*.out
+
+# dependency directories (remove the comment below to include it)
+vendor/
+
+# mac misc files
+*.DS_Store
+.DS_Store
+
+
+# env files
+.env
+*.env
+
+
+.idea/
+data/
+
