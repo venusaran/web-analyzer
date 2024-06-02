@@ -8,11 +8,20 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/soheilhy/cmux"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	controller "github.com/venusaran/web-analyzer/api/rest/controller/analyzer"
 	"github.com/venusaran/web-analyzer/api/rest/router"
+	_ "github.com/venusaran/web-analyzer/docs"
 	"github.com/venusaran/web-analyzer/pkg/util"
 )
 
+// @title 	Web Analyzer API
+// @version	1.0
+// @description An API to analyze a web page and it's contents
+
+// @host 	localhost:8080
+// @BasePath /v1/analyzer
 func main() {
 	l := setUpListener()
 	m := cmux.New(l)
@@ -26,6 +35,16 @@ func main() {
 func serveHTTP(l net.Listener, taskController controller.TaskController) {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+
+	// to serve static files
+	r.Static("/static", "./static")
+
+	// static route for landing page
+	r.GET("/", func(c *gin.Context) { c.Redirect(http.StatusMovedPermanently, "static/index.html") })
+
+	// add swagger route
+	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	newRouter := router.NewRouter(taskController)
 	newRouter.SetUpGinEngine(r)
 	s := &http.Server{

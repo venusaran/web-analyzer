@@ -1,0 +1,91 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "An API to analyze a web page and it's contents",
+        "title": "Web Analyzer API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/v1/analyzer",
+    "paths": {
+        "/": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "ExecuteWebScrapingTask",
+                "parameters": [
+                    {
+                        "description": "url to analyze",
+                        "name": "url",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.TargetURL"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.PageData"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "interfaces.PageData": {
+            "type": "object",
+            "properties": {
+                "accessibleURLs": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "boolean"
+                    }
+                },
+                "externalLinks": {
+                    "type": "integer"
+                },
+                "headings": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "htmlversion": {
+                    "type": "string"
+                },
+                "inaccessibleLinks": {
+                    "type": "integer"
+                },
+                "internalLinks": {
+                    "type": "integer"
+                },
+                "loginForm": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "interfaces.TargetURL": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -20,6 +20,15 @@ func NewTaskController() TaskController {
 	return &taskController{}
 }
 
+// ExecuteWebScrapingTask godoc
+//
+//		@Summary	ExecuteWebScrapingTask
+//		@Tags		Tasks
+//		@Accept		json
+//	 	@Param 		url body interfaces.TargetURL true "url to analyze"
+//		@Produce	json
+//		@Success	200	{object}	interfaces.PageData
+//		@Router		/  [post]
 func (t taskController) ExecuteWebScrapingTask(c *gin.Context) {
 	var payload interfaces.TargetURL
 	err := c.ShouldBindJSON(&payload)
@@ -28,7 +37,7 @@ func (t taskController) ExecuteWebScrapingTask(c *gin.Context) {
 		return
 	}
 
-	linkStats, data, err := t.srv.RetrieveData(payload.URL)
+	resp, err := t.srv.RetrieveData(payload.URL)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
@@ -37,10 +46,9 @@ func (t taskController) ExecuteWebScrapingTask(c *gin.Context) {
 	c.JSON(
 		http.StatusOK,
 		gin.H{
-			"link_stats": linkStats,
-			"page_data":  data,
-			"status":     http.StatusOK,
-			"message":    "Data Extracted",
+			"page_data": resp,
+			"status":    http.StatusOK,
+			"message":   "Data Extracted Successfully",
 		},
 	)
 }

@@ -3,6 +3,7 @@ package scraper
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 	"sync"
 
@@ -10,90 +11,112 @@ import (
 	"golang.org/x/net/html"
 )
 
-// TODO: Add logs
-func fetcher(url string, ch chan string, chFinished chan bool, data *interfaces.PageData) {
+func fetcher(pageURL string, ch chan string, chFinished chan bool, pageInfo *interfaces.PageData) {
 	defer func() {
 		chFinished <- true
 	}()
 
-	resp, err := http.Get(url)
+	resp, err := http.Get(pageURL)
 	if err != nil {
-		fmt.Println("ERROR: Failed to fetch:", url)
+		fmt.Println("ERROR: Failed to fetch:", pageURL)
 		return
 	}
 	defer resp.Body.Close()
 
-	// check for HTML version from the doctype
-	if docType, err := getHTMLVersion(resp); err == nil {
-		data.HTMLVersion = docType
+	z := html.NewTokenizer(resp.Body)
+	baseURL, err := url.Parse(pageURL)
+	if err != nil {
+		fmt.Println("ERROR: Invalid base URL:", pageURL)
+		return
 	}
 
-	z := html.NewTokenizer(resp.Body)
-	data.Headings = make(map[string]int)
 	for {
 		tt := z.Next()
-		switch {
-		case tt == html.ErrorToken:
+		switch tt {
+		case html.ErrorToken:
 			return
-		case tt == html.DoctypeToken:
-			data.HTMLVersion = "HTML5" // TODO:assuming HTML5 if doctype is found
-		case tt == html.StartTagToken:
+		case html.DoctypeToken:
+			pageInfo.HTMLVersion, _ = getHTMLVersion(z.Token())
+		case html.StartTagToken, html.SelfClosingTagToken:
 			t := z.Token()
 			switch t.Data {
 			case "title":
-				tt = z.Next()
-				if tt == html.TextToken {
-					data.Title = z.Token().Data
-				}
+				pageInfo.Title = getTitle(z)
 			case "h1", "h2", "h3", "h4", "h5", "h6":
-				data.Headings[t.Data]++
-			case "form":
-				for _, attr := range t.Attr {
-					if attr.Key == "action" {
-						data.LoginForm = true
-					}
-				}
+				pageInfo.Headings[t.Data]++
 			case "a":
-				ok, url := getHref(t)
-				if ok && strings.HasPrefix(url, "http") {
-					ch <- url
+				ok, href := getHref(t)
+				if ok && strings.HasPrefix(href, "http") {
+					parsedURL, err := url.Parse(href)
+					if err == nil {
+						if parsedURL.Host == baseURL.Host {
+							pageInfo.InternalLinks++
+						} else {
+							pageInfo.ExternalLinks++
+						}
+					}
+					ch <- href
 				}
+			case "form":
+				pageInfo.LoginForm = pageInfo.LoginForm || isLoginForm(t)
 			}
 		}
 	}
 }
 
-func getHTMLVersion(resp *http.Response) (string, error) {
-	z := html.NewTokenizer(resp.Body)
-	for {
-		tt := z.Next()
-		switch tt {
-		case html.ErrorToken:
-			return "", fmt.Errorf("doctype not found")
-		case html.DoctypeToken:
-			t := z.Token()
-			return strings.ToUpper(t.Data), nil
+func getHTMLVersion(token html.Token) (string, error) {
+	docType := strings.ToLower(token.Data)
+
+	if strings.Contains(docType, "html") {
+		if strings.Contains(docType, "4.01") {
+			return "HTML 4.01", nil
+		} else if strings.Contains(docType, "xhtml 1.0") {
+			return "XHTML 1.0", nil
+		} else if strings.Contains(docType, "xhtml 1.1") {
+			return "XHTML 1.1", nil
+		} else if strings.Contains(docType, "xhtml 1.2") {
+			return "XHTML 1.2", nil
+		} else {
+			return "HTML5", nil
 		}
 	}
+	return "Unknown HTML version", nil
 }
 
-func getHref(t html.Token) (ok bool, href string) {
+func getTitle(z *html.Tokenizer) string {
+	tt := z.Next()
+	if tt == html.TextToken {
+		return z.Token().Data
+	}
+	return ""
+}
+
+func getHref(t html.Token) (bool, string) {
 	for _, a := range t.Attr {
 		if a.Key == "href" {
-			href = a.Val
-			ok = true
+			return true, a.Val
 		}
 	}
-	return
+	return false, ""
 }
 
-func checkUrl(url string, results map[string]bool, wg *sync.WaitGroup) {
+func isLoginForm(t html.Token) bool {
+	for _, a := range t.Attr {
+		if a.Key == "id" && strings.Contains(strings.ToLower(a.Val), "login") {
+			return true
+		}
+	}
+	return false
+}
+
+func checkUrl(url string, d *interfaces.PageData, wg *sync.WaitGroup) {
 	defer wg.Done()
 	resp, err := http.Head(url)
 	if err != nil {
-		results[url] = false
+		d.AccessibleURLs[url] = false
+		d.InaccessibleLinks++
 		return
 	}
 	defer resp.Body.Close()
-	results[url] = resp.StatusCode == http.StatusOK
+	d.AccessibleURLs[url] = resp.StatusCode == http.StatusOK
 }

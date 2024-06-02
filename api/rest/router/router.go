@@ -18,7 +18,6 @@ func NewRouter(taskController controller.TaskController) *Router {
 	}
 }
 
-// SetUpGinEngine will add middlewares and routes to the gin engine argument.
 func (router Router) SetUpGinEngine(r *gin.Engine) *gin.Engine {
 	r.Use(cors.New(cors.Config{
 		AllowCredentials: false,

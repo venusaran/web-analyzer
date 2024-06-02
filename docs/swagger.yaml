@@ -1,0 +1,59 @@
+basePath: /v1/analyzer
+definitions:
+  interfaces.PageData:
+    properties:
+      accessibleURLs:
+        additionalProperties:
+          type: boolean
+        type: object
+      externalLinks:
+        type: integer
+      headings:
+        additionalProperties:
+          type: integer
+        type: object
+      htmlversion:
+        type: string
+      inaccessibleLinks:
+        type: integer
+      internalLinks:
+        type: integer
+      loginForm:
+        type: boolean
+      title:
+        type: string
+    type: object
+  interfaces.TargetURL:
+    properties:
+      url:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: An API to analyze a web page and it's contents
+  title: Web Analyzer API
+  version: "1.0"
+paths:
+  /:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: url to analyze
+        in: body
+        name: url
+        required: true
+        schema:
+          $ref: '#/definitions/interfaces.TargetURL'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.PageData'
+      summary: ExecuteWebScrapingTask
+      tags:
+      - Tasks
+swagger: "2.0"

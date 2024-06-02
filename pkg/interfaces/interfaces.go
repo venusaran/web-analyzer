@@ -5,8 +5,12 @@ type TargetURL struct {
 }
 
 type PageData struct {
-	HTMLVersion string
-	Title       string
-	Headings    map[string]int
-	LoginForm   bool
+	HTMLVersion       string
+	Title             string
+	Headings          map[string]int
+	InternalLinks     int
+	ExternalLinks     int
+	InaccessibleLinks int
+	LoginForm         bool
+	AccessibleURLs    map[string]bool
 }
