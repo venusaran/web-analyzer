@@ -19,7 +19,7 @@ func (srv *ScraperService) RetrieveData(url string) (resp interfaces.PageData, e
 	resp.Headings = make(map[string]int)
 	resp.AccessibleURLs = make(map[string]bool)
 
-	// make channels
+	// make 2 channels
 	chUrls := make(chan string)
 	// channel to notify all the tasks are finished execution
 	chFinished := make(chan bool)

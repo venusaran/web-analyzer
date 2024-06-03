@@ -16,6 +16,14 @@ func fetcher(pageURL string, ch chan string, chFinished chan bool, pageInfo *int
 		chFinished <- true
 	}()
 
+	// check the URL is valid one first
+	baseURL, err := url.Parse(pageURL)
+	if err != nil {
+		fmt.Println("ERROR: Invalid base URL:", pageURL)
+		return
+	}
+
+	// make initial page fetch
 	resp, err := http.Get(pageURL)
 	if err != nil {
 		fmt.Println("ERROR: Failed to fetch:", pageURL)
@@ -24,12 +32,6 @@ func fetcher(pageURL string, ch chan string, chFinished chan bool, pageInfo *int
 	defer resp.Body.Close()
 
 	z := html.NewTokenizer(resp.Body)
-	baseURL, err := url.Parse(pageURL)
-	if err != nil {
-		fmt.Println("ERROR: Invalid base URL:", pageURL)
-		return
-	}
-
 	for {
 		tt := z.Next()
 		switch tt {
@@ -111,12 +113,21 @@ func isLoginForm(t html.Token) bool {
 
 func checkUrl(url string, d *interfaces.PageData, wg *sync.WaitGroup) {
 	defer wg.Done()
-	resp, err := http.Head(url)
+	resp, err := http.Get(url)
+	// count it as InaccessibleLink if there is an error while fetching
 	if err != nil {
 		d.AccessibleURLs[url] = false
 		d.InaccessibleLinks++
 		return
 	}
+
+	// also count it as InaccessibleLink if the http status code is 200
+	if resp.StatusCode != 200 {
+		d.AccessibleURLs[url] = false
+		d.InaccessibleLinks++
+		return
+	}
+
 	defer resp.Body.Close()
 	d.AccessibleURLs[url] = resp.StatusCode == http.StatusOK
 }
