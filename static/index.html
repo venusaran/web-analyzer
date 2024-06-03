@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>URL Scrapper</title>
+    <title>Web Analyzer</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -12,7 +12,7 @@
         background-color: #f4f4f4;
       }
       .container {
-        max-width: 600px;
+        max-width: 1200px;
         margin: 0 auto;
         padding: 20px;
         background-color: #fff;
@@ -91,7 +91,7 @@
   </head>
   <body>
     <div class="container">
-      <h1>URL Scrapper</h1>
+      <h1>Web Analyzer</h1>
       <form id="scrapperForm">
         <input type="text" id="urlInput" placeholder="Enter URL" required />
         <button type="submit">Submit</button>
@@ -136,17 +136,17 @@
       function displayResult(data) {
         const resultDiv = document.getElementById("result");
         resultDiv.innerHTML = `
-                <p><strong>HTML Version:</strong> ${data.HTMLVersion}</p>
-                <p><strong>Title:</strong> ${data.Title}</p>
+                <p><strong>HTML Version:</strong> ${data.html_version}</p>
+                <p><strong>Title:</strong> ${data.title}</p>
                 <p><strong>Headings:</strong> ${JSON.stringify(
-                  data.Headings
+                  data.headings
                 )}</p>
-                <p><strong>Internal Links:</strong> ${data.InternalLinks}</p>
-                <p><strong>External Links:</strong> ${data.ExternalLinks}</p>
+                <p><strong>Internal Links:</strong> ${data.internal_links}</p>
+                <p><strong>External Links:</strong> ${data.external_links}</p>
                 <p><strong>Inaccessible Links:</strong> ${
-                  data.InaccessibleLinks
+                  data.inaccessible_links
                 }</p>
-                <p><strong>Login Form Present:</strong> ${data.LoginForm}</p>
+                <p><strong>Login Form Present:</strong> ${data.login_form}</p>
                 <p><strong>Accessible URLs:</strong></p>
                 <table>
                     <thead>
@@ -156,7 +156,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        ${Object.entries(data.AccessibleURLs)
+                        ${Object.entries(data.accessible_urls)
                           .map(
                             ([url, accessible]) => `
                             <tr>

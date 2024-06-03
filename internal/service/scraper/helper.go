@@ -13,6 +13,7 @@ import (
 
 func fetcher(pageURL string, ch chan string, chFinished chan bool, pageInfo *interfaces.PageData) {
 	defer func() {
+		// notify all executions completed
 		chFinished <- true
 	}()
 
@@ -51,6 +52,8 @@ func fetcher(pageURL string, ch chan string, chFinished chan bool, pageInfo *int
 				if ok && strings.HasPrefix(href, "http") {
 					parsedURL, err := url.Parse(href)
 					if err == nil {
+						// if the host of the new url is same as the baseURL we passed
+						// it means it's an internal link
 						if parsedURL.Host == baseURL.Host {
 							pageInfo.InternalLinks++
 						} else {

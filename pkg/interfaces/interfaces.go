@@ -5,12 +5,12 @@ type TargetURL struct {
 }
 
 type PageData struct {
-	HTMLVersion       string
-	Title             string
-	Headings          map[string]int
-	InternalLinks     int
-	ExternalLinks     int
-	InaccessibleLinks int
-	LoginForm         bool
-	AccessibleURLs    map[string]bool
+	HTMLVersion       string          `json:"html_version"`
+	Title             string          `json:"title"`
+	Headings          map[string]int  `json:"headings"`
+	InternalLinks     int             `json:"internal_links"`
+	ExternalLinks     int             `json:"external_links"`
+	InaccessibleLinks int             `json:"inaccessible_links"`
+	LoginForm         bool            `json:"login_form"`
+	AccessibleURLs    map[string]bool `json:"accessible_urls"`
 }

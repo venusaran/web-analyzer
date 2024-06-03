@@ -22,13 +22,13 @@ func NewTaskController() TaskController {
 
 // ExecuteWebScrapingTask godoc
 //
-//		@Summary	ExecuteWebScrapingTask
-//		@Tags		Tasks
-//		@Accept		json
-//	 	@Param 		url body interfaces.TargetURL true "url to analyze"
-//		@Produce	json
-//		@Success	200	{object}	interfaces.PageData
-//		@Router		/  [post]
+//	@Summary	ExecuteWebScrapingTask
+//	@Tags		Tasks
+//	@Accept		json
+//	@Param 		url body interfaces.TargetURL true "url to analyze"
+//	@Produce	json
+//	@Success	200	{object}	interfaces.PageData
+//	@Router		/  [post]
 func (t taskController) ExecuteWebScrapingTask(c *gin.Context) {
 	var payload interfaces.TargetURL
 	err := c.ShouldBindJSON(&payload)

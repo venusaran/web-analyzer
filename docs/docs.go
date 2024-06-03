@@ -53,13 +53,13 @@ const docTemplate = `{
         "interfaces.PageData": {
             "type": "object",
             "properties": {
-                "accessibleURLs": {
+                "accessible_urls": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "boolean"
                     }
                 },
-                "externalLinks": {
+                "external_links": {
                     "type": "integer"
                 },
                 "headings": {
@@ -68,16 +68,16 @@ const docTemplate = `{
                         "type": "integer"
                     }
                 },
-                "htmlversion": {
+                "html_version": {
                     "type": "string"
                 },
-                "inaccessibleLinks": {
+                "inaccessible_links": {
                     "type": "integer"
                 },
-                "internalLinks": {
+                "internal_links": {
                     "type": "integer"
                 },
-                "loginForm": {
+                "login_form": {
                     "type": "boolean"
                 },
                 "title": {

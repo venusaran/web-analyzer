@@ -21,7 +21,6 @@ func (srv *ScraperService) RetrieveData(url string) (resp interfaces.PageData, e
 
 	// make 2 channels
 	chUrls := make(chan string)
-	// channel to notify all the tasks are finished execution
 	chFinished := make(chan bool)
 
 	// fetch data from the initial page(the one received from user)
