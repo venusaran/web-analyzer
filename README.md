@@ -114,6 +114,8 @@ README.md
 ## Example
 
 Here's a sample output you can expect from the application:
+
+```
 HTML Version: HTML 5
 Title: Example Title
 Headings: {"h1": 2, "h2": 3, "h3": 1}
@@ -125,6 +127,7 @@ Accessible URLs:
 
 https://example.com: Accessible
 https://example.org: Inaccessible
+```
 
 ## Contributing
 
