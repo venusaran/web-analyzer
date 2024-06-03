@@ -58,7 +58,7 @@ This is a simple web application that takes a URL as input, scrapes the web page
    go run cmd/main.go
    ```
 
-2. Open your web browser and navigate to `http://localhost:8080`.
+2. Open your web browser and navigate to `http://localhost:8080`
 
 ## Usage
 
@@ -70,15 +70,18 @@ This is a simple web application that takes a URL as input, scrapes the web page
 ## Accessing Swagger Documentation
 
 Once the server is running, you can access the Swagger documentation at:
-[text](http://localhost:8080/docs/index.html#/)
+[Swagger Docs](http://localhost:8080/docs/index.html#/)
 
 ## Project Structure
 
+```
+.
+|
 api/
 └── rest/
-└── controller/
-└── analyzer/
-└── analyzer.go
+|   └── controller/
+|      └── analyzer/
+|         └── analyzer.go
 router/
 └── router.go
 cmd/
@@ -89,14 +92,14 @@ docs/
 └── swagger.yaml
 internal/
 └── service/
-└── scraper/
-└── helper.go
-└── scraper.go
+|   └── scraper/
+|   └── helper.go
+|   └── scraper.go
 pkg/
 └── constants/
-└── constants.go
+|   └── constants.go
 └── interfaces/
-└── interfaces.go
+|   └── interfaces.go
 util/
 └── utility.go
 static/
@@ -106,6 +109,7 @@ vendor/
 go.mod
 go.sum
 README.md
+```
 
 ## Example
 
