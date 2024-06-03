@@ -72,6 +72,15 @@ This is a simple web application that takes a URL as input, scrapes the web page
 Once the server is running, you can access the Swagger documentation at:
 [Swagger Docs](http://localhost:8080/docs/index.html#/)
 
+## Test Cases
+
+To execute the test cases, please follow thebelow steps
+
+```sh
+cd internal/service/scraper
+go test
+```
+
 ## Project Structure
 
 ```
@@ -95,6 +104,7 @@ internal/
 |   └── scraper/
 |   └── helper.go
 |   └── scraper.go
+|   └── helper_test.go
 pkg/
 └── constants/
 |   └── constants.go
